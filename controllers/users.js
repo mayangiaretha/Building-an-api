@@ -8,11 +8,12 @@ class UserControler{
     static createUser(req, res) {
         const user = req.body; 
 
-        users.push({ ...user, id: uuidv4() });
+        const createUser = { ...user, id: uuidv4() } 
+        users.push(createUser);
      
-         res.send(`user with the name ${user.firstName} added to the database!`);
+         res.status(201).json({createUser, message : `user with the name ${user.firstName} added to the database!`});
 
-    }
+    } 
 
     static getAUser(req, res){
         const { id} = req. params;
@@ -34,7 +35,7 @@ class UserControler{
 
         users = users.filter((user) => user.id !== id);
         
-        res.send(`user with the id ${id} deleted from the database.`);
+        res.status(204)
         
     }
     static upDated(req, res){
@@ -43,6 +44,9 @@ class UserControler{
         const{ firstName, lastName, age } = req.body;
     
         const user = users.find((user) => user.id === id);
+        if(!user){
+            return res.status(201).json({error: "user does not exist please check id"})
+        }
         
         if(firstName) user.firstName = firstName;
         
@@ -50,7 +54,7 @@ class UserControler{
         
         if(age) user.age = age;
     
-        res.send (`user with id ${id}has been updated`);
+        res.status(201).json({message :`user with id ${id}has been updated`});
         
     }
 }
